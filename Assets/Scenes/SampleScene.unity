@@ -1150,13 +1150,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
-  acceleration: 10
-  deceleration: 15
-  jumpHeight: 10
-  fallAcceleration: 5
-  mouseSensitivity: 15
-  fallSpeed: 10
-  maxSlopeAngle: 65
+  acceleration: 15
+  deceleration: 25
+  jumpHeight: 5
+  fallAcceleration: 10
+  mouseSensitivity: 7.5
+  fallSpeed: 0
+  maxSlopeAngle: 55
   velocityZ: 0
   velocityX: 0
   isGrounded: 0
@@ -2110,7 +2110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _action: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  mouseSensitivity: 25
+  mouseSensitivity: 7.5
 --- !u!1 &1919774932
 GameObject:
   m_ObjectHideFlags: 0
