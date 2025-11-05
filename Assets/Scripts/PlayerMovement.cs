@@ -15,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float fallAcceleration;
     [Tooltip("Adjusts how fast the object moves with the mouse")]
     [SerializeField] float mouseSensitivity;
-     [SerializeField] private float fallSpeed;
     [Range(0, 90)]
     [Tooltip("Adjusts how steep the slope can be before the \"onSlope()\" method runs. Its probably best in this script to keep it somewhat close to 90 degrees")]
     [SerializeField] float maxSlopeAngle;
@@ -33,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Vector3 projectedMovement;
     [SerializeField] float DebugSlopeAngle;
     [SerializeField] private int groundContacts = 0;
+    [SerializeField] private float fallSpeed;
 
     //--------------------------------------------------------------------------------
 
@@ -100,10 +100,20 @@ public class PlayerMovement : MonoBehaviour
 
         isOnSlope = onSlope(collisionAngle(contact));
         DebugSlopeAngle = collisionAngle(contact);
+
+        Debug.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y - 0.1f, transform.position.z), Color.red);
     }
     void FixedUpdate()
     {
+        groundContacts = 0;
         movePlayer();
+    }
+    void LateUpdate()
+    {
+        if (groundContacts <= 0)
+        {
+            isGrounded = false;
+        }
     }
 
     /// <summary>
@@ -123,12 +133,13 @@ public class PlayerMovement : MonoBehaviour
         if (spacePressed && isGrounded)
         {
             onWall = false;
-            rb.constraints &= ~RigidbodyConstraints.FreezePositionY;
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-            rb.AddForce(Vector3.up * jumpHeight, ForceMode.VelocityChange);
             spacePressed = false;
             isGrounded = false;
             rb.useGravity = true;
+            rb.constraints &= ~RigidbodyConstraints.FreezePositionY;
+            
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+            rb.AddForce(Vector3.up * jumpHeight, ForceMode.VelocityChange);
         }
 
 
@@ -143,10 +154,11 @@ public class PlayerMovement : MonoBehaviour
 
         else if (onWall && !onSlope(collisionAngle(contact)))
         {
-            if (isGrounded)
+            if (isGrounded || Physics.Raycast(transform.position,Vector3.down,0.1f))
             {
                 rb.constraints |= RigidbodyConstraints.FreezePositionY;
                 rb.linearVelocity = new Vector3(movement.x * movementSpeed, rb.linearVelocity.y, movement.z * movementSpeed);
+                isGrounded = true;
             }
             else
             {
@@ -162,9 +174,10 @@ public class PlayerMovement : MonoBehaviour
             fallSpeed = 0;
             rb.linearVelocity = new Vector3(movement.x * movementSpeed, rb.linearVelocity.y, movement.z * movementSpeed);
         }
-        
-        
+
+
         spacePressed = false;
+        
     }
 
     /// <summary>
@@ -329,9 +342,12 @@ public class PlayerMovement : MonoBehaviour
         groundContacts = collisionInfo.contactCount;
         if (collisionInfo.gameObject.CompareTag("Ground"))
         {
-            if (collisionAngle(contact) < maxSlopeAngle)
+            foreach (ContactPoint c in collisionInfo.contacts)
             {
-                isGrounded = true;
+                if (collisionAngle(c) < maxSlopeAngle)
+                {
+                    isGrounded = true;
+                }
             }
         }
     }
@@ -340,12 +356,20 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collisionInfo.gameObject.CompareTag("Ground"))
         {
+            groundContacts--;
             if (groundContacts <= 0)
             {
-                isGrounded = false;
+                onWall = false;
             }
-           
-                
+
+            foreach (ContactPoint c in collisionInfo.contacts)
+            {
+                if (collisionAngle(c) < maxSlopeAngle)
+                {
+                    isGrounded = false;
+                }
+            }
+            
         }
     }
 
@@ -353,6 +377,7 @@ public class PlayerMovement : MonoBehaviour
     {
         contact = collisionInfo.contacts[0];
         groundContacts = collisionInfo.contactCount;
+
         foreach (ContactPoint c in collisionInfo.contacts)
             if (collisionAngle(c) > maxSlopeAngle)
             {

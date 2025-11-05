@@ -1152,10 +1152,9 @@ MonoBehaviour:
   movementSpeed: 5
   acceleration: 15
   deceleration: 25
-  jumpHeight: 5
+  jumpHeight: 7
   fallAcceleration: 10
-  mouseSensitivity: 7.5
-  fallSpeed: 0
+  mouseSensitivity: 45
   maxSlopeAngle: 55
   velocityZ: 0
   velocityX: 0
@@ -1165,6 +1164,7 @@ MonoBehaviour:
   projectedMovement: {x: 0, y: 0, z: 0}
   DebugSlopeAngle: 0
   groundContacts: 0
+  fallSpeed: 0
 --- !u!136 &898941414
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2110,7 +2110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _action: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  mouseSensitivity: 7.5
+  mouseSensitivity: 45
 --- !u!1 &1919774932
 GameObject:
   m_ObjectHideFlags: 0
