@@ -117,7 +117,9 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves the player (in FixedUpdate), applies slope movement, and serves as the main logic in the PlayerMovement class.
+    /// Moves the player (in FixedUpdate), applies slope movement, and serves as the main logic in the PlayerMovement class. This should really be broken into different states in a state machine. 
+    /// There are 4 different charecteristic states: a "inAir" state (!isGrounded && !onWall && !onSlope--although I believe if you are on a slope you are on ground? so that needs to be fixed), 
+    /// a temporary jump state (1 frame?), a onSlope state, a onWall state, and the quirky in between wall and ground/slope state.
     /// </summary>
     /// <remarks>
     /// <para><b>Preconditions:</b> The player's inputs must be checked using checkPlayer() (called in a non-FixedUpdate method).</para>
