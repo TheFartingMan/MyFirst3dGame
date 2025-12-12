@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] float movementSpeed;
     [SerializeField] float acceleration;
+    [SerializeField] float iceAcceleration;
     [SerializeField] float deceleration;
     [SerializeField] float jumpHeight;
     [SerializeField] float fallAcceleration;
@@ -46,7 +47,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
     private float playerHeight;
     private ContactPoint contact;
-
+    private float storeDeceleration;
+    private float storeAcceleration;
 
 
 
@@ -82,6 +84,10 @@ public class PlayerMovement : MonoBehaviour
 
         CapsuleCollider capsule = GetComponent<CapsuleCollider>();
         playerHeight = capsule.height * transform.localScale.y;
+
+        //Stored acceleration for ice physics initialized
+        storeAcceleration = acceleration;
+        storeDeceleration = deceleration;
 
         movePlayer();
     }
@@ -352,6 +358,13 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
+        if (collisionInfo.gameObject.layer == LayerMask.NameToLayer("ice"))
+        {
+            storeDeceleration = deceleration;
+            storeAcceleration = acceleration;
+            deceleration = 0;
+            acceleration = iceAcceleration;
+        }
     }
 
     private void OnCollisionExit(Collision collisionInfo)
@@ -371,8 +384,11 @@ public class PlayerMovement : MonoBehaviour
                     isGrounded = false;
                 }
             }
-            
+
         }
+        //Reset just in case the player walks on ice
+        deceleration = storeDeceleration;
+        acceleration = storeAcceleration;
     }
 
     void OnCollisionStay(Collision collisionInfo)

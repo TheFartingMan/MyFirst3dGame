@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 [RequireComponent(typeof(Animator))]
 public class SwordSwing : MonoBehaviour
 {
     private Animator anim;
+    [SerializeField] private ParticleSystem ps;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -20,6 +22,14 @@ public class SwordSwing : MonoBehaviour
         {
             anim.SetBool("isSwingingSword", false);
         }
+    }
+    
+    /// <summary>
+    /// Used in the RH swing animation.
+    /// </summary>
+    public void playSwordSwing()
+    {
+        ps.Play(true);
     }
 
 }
