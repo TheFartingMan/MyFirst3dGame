@@ -9,6 +9,7 @@ public class UniversalHealth : MonoBehaviour
     [SerializeField] private float startingHealth;
     [SerializeField] private float invincibilitySeconds;
     [SerializeField] private Color damageColor;
+    [SerializeField] private GameObject deathParticles;
     #endregion
 
     #region Debug Variables
@@ -47,13 +48,14 @@ public class UniversalHealth : MonoBehaviour
 
             if (currentHealth <= 0)
             {
+                Instantiate(deathParticles, transform.position, Quaternion.identity);
                 Destroy(gameObject);
-            } 
+            }
         }
-        
+
     }
 
-#region Color flash logic
+    #region Color flash logic
     private IEnumerator DoFlash()
     {
         rend.material.color = damageColor;
